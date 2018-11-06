@@ -6,7 +6,7 @@ import torch
 
 if __name__ == '__main__':
     #pylint: disable=invalid-name
-    iterations = 1000
+    iterations = 2000
     gamma = 0.99
     timesteps = 100
     ratio_clip = 0.2
@@ -19,16 +19,7 @@ if __name__ == '__main__':
     gae_tau = 0.95
     decay_steps = None
     solved = 30.0
-
-    # gamma=0.99
-    # timesteps=100
-    # ratio_clip=0.2
-    # batch_size=32*20
-    # epochs=10
-    # gradient_clip=10.0
-    # lrate=1e-3
-    # beta=0.01
-    # gae_tau=0.95
+    out_file = 'saved_models/ppo.ckpt'
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     env = ReacherEnvironment()
@@ -47,4 +38,4 @@ if __name__ == '__main__':
         gae_tau=gae_tau
     )
 
-    train(a, iterations=iterations, log_each=log_each, solved=solved, decay_steps=decay_steps )
+    train(a, iterations=iterations, log_each=log_each, solved=solved, decay_steps=decay_steps, out_file=out_file)
