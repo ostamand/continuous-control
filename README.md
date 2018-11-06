@@ -1,5 +1,8 @@
 # Unity Reacher
-This repository includes the code needed to train agents to solve Udacity Version 2 (20 agents) navigation project. The environment is based on [Unity's Reacher environment](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md). 
+![PPO agent](assets/unity_reacher_ppo_agent.gif)
+This repository includes the code needed to train agents to solve Udacity version 2 (20 agents) navigation project. 
+
+The environment is based on [Unity's Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md). 
 
 ## Training 
 
@@ -7,11 +10,17 @@ To train the agent simply run `python train.py`. All hyperparameters can be modi
 
 ## Results 
 
-A [trained model]() with an average score of XX over 100 episodes of all 20 parallel agents is included in this repository.
+A [trained model](saved_models/agent_ppo.ckpt) with an average score of 38.45 over 100 episodes of all 20 parallel agents is included in this repository.
 
 For a more complete description of the results, refer to the [report](report.md) page.
 
-To visualise the trained agent, use this [notebook]().
+To visualise the trained agent either follow this [link](https://youtu.be/ExtYVXhBvEI) or run:
+
+```
+python watch_trained_agent.py --agent data/ppo.ckpt
+```
+
+where `data/ppo.ckpt` is the location of the trained agent checkpoint. 
 
 ## Installation
 
