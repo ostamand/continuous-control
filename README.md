@@ -2,7 +2,16 @@
 ![PPO agent](assets/unity_reacher_ppo_agent.gif)
 This repository includes the code needed to train agents to solve Udacity version 2 (20 agents) navigation project. 
 
-The environment is based on [Unity's Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md). 
+The environment is based on [Unity's Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md). It includes twenty separate agents controlling a double jointed arm. The goal of each agent is to move its hand to the target location (representated by a green shpere when the goal is met and a blueish sphere when it is not). 
+
+Each timestep, the agent recieves:
+
+-  A 28 element long vector representing the position, rotation, velocity and angular velocities of its two arm rigid bodies.
+- A reward of +0.1 if the hand of the agent is within the target boundary.
+
+The actions space is continuous and consists of the torque applicable to each joint (clipped btwn -1 and +1).
+
+Finally, the environment is considered solved when the average total reward of the last 100 episodes over all parallel agents is greater than 30.0.
 
 ## Training 
 
@@ -18,9 +27,7 @@ To visualise the trained agent either follow this [link](https://youtu.be/ExtYVX
 
 ```
 python watch_trained_agent.py --agent data/ppo.ckpt
-```
-
-where `data/ppo.ckpt` is the location of the trained agent checkpoint. 
+``` 
 
 ## Installation
 
