@@ -11,9 +11,9 @@ It is observed that, with the proposed network architecture and hyperparameters,
 
 ## Network Architecture 
 
-Actor and critic networks with continuous action space are used. The first two fully connected layers are common two both networks. Then, in the case of the critic, a fully connected layer yields the state value. For the actor, a fully connected layer gives the mean of a normal distribution for each action. The action to be taken is sampled from this mean and a learnable standard deviation. Entropy is used to force exploration of the actor and is determined from the normal distribution.
+Actor and critic networks with continuous action space are used. The first two fully connected layers are common to both networks. Then, in the case of the critic, a fully connected layer yields the state value. For the actor, a fully connected layer gives the mean of a normal distribution for each action. The action to be taken is sampled from this mean and a learnable scalar standard deviation. Entropy is used to force exploration of the actor and is calculated from the normal distribution.
 
-The algorith can be summarized as follow:
+The algorithm can be summarized as follow:
 
 1. Trajectory of 100 steps are sampled from all 20 parallel agents. 
 2. The advantage at each timestep is calculated using [Generalized Advantage Estimate](https://arxiv.org/abs/1506.02438). 
@@ -39,6 +39,6 @@ Tau GAE | 0.95 |Generalized Advantage Estimate tau coefficient
 
 ## Further work 
 
-- Use a deeper network
-- Use a fully connected layer to model the standard deviation the actor (in the current implementation the deviation is a scalar not function of the state)
-- Use some form of curiosity to favorize exploration ([link](https://arxiv.org/abs/1808.04355))
+- Use a deeper network.
+- Use a fully connected layer to model the standard deviation of the actor (in the current implementation, the deviation is a scalar not function of the state).
+- Use some form of curiosity to favorize exploration ([link](https://arxiv.org/abs/1808.04355)).

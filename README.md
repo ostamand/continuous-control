@@ -2,7 +2,7 @@
 ![PPO agent](assets/unity_reacher_ppo_agent.gif)
 This repository includes the code needed to train agents to solve Udacity version 2 (20 agents) navigation project. 
 
-The environment is based on [Unity's Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md). It includes twenty separate agents controlling a double jointed arm. The goal of each agent is to move its hand to the target location (representated by a green shpere when the goal is met and a blueish sphere when it is not). 
+The environment is based on [Unity's Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md). It includes twenty separate agents controlling a double jointed arm. The goal of each agent is to move its hand to the target location (representated by a green sphere when the goal is met and a blueish sphere when it is not). 
 
 Each timestep, the agent recieves:
 
@@ -48,7 +48,7 @@ cd python
 pip install .
 ```
 
-Install PyTorch using the recommended [pip command](https://pytorch.org/). For example, to install with CUDA 9.2: 
+Install PyTorch using the recommended [pip command](https://pytorch.org/) from the PyTorch site. For example, to install with CUDA 9.2: 
 
 ```
 conda install pytorch cuda92 -c pytorch
@@ -60,7 +60,7 @@ Clone this repository locally.
 git clone https://github.com/ostamand/continuous-control.git
 ```
 
-Finally, download the environment which correspond to your operationg system. Copy/paste the extracted content to the `data` subfolder. 
+Finally, download the environment which corresponds to your operationg system. Copy/paste the extracted content to the `data` subfolder. 
 
 - [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Linux.zip) 
 - [Mac OSX](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher.app.zip)
