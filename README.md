@@ -9,7 +9,7 @@ Each timestep, the agent recieves:
 -  A 28 element long vector representing the position, rotation, velocity and angular velocities of its two arm rigid bodies.
 - A reward of +0.1 if the hand of the agent is within the target boundary.
 
-The actions space is continuous and consists of the torque applicable to each joint (clipped btwn -1 and +1).
+The actions space is continuous and consists of the torque applicable to each joint (clipped between -1 and +1).
 
 Finally, the environment is considered solved when the average total reward of the last 100 episodes over all parallel agents is greater than 30.0.
 
