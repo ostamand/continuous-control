@@ -1,17 +1,22 @@
-from unityagents import UnityEnvironment
 import numpy as np
 import torch
 
-class ReacherEnvironment():
+class UnityEnv():
     """Unity Reacher Environment Wrapper
         https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md
 
     """
-    def __init__(self, env_file='data/Reacher.exe', no_graphics=True):
-        self.env = UnityEnvironment(file_name='data/Reacher.exe', no_graphics=no_graphics)  
+    def __init__(self, env_file='data/Reacher.exe', no_graphics=True, mlagents=False):
+        if mlagents:
+            from mlagents.envs.environment import UnityEnvironment
+        else:
+            from unityagents import UnityEnvironment
+        self.env = UnityEnvironment(file_name=env_file, no_graphics=no_graphics)  
         self.brain_name = self.env.brain_names[0]
         brain = self.env.brains[self.brain_name]
         self.action_size = brain.vector_action_space_size
+        if type(self.action_size) != int:
+            self.action_size = self.action_size[0]
         env_info = self.env.reset(train_mode=True)[self.brain_name] 
         self.state_size = env_info.vector_observations.shape[1]
         self.num_agents = len(env_info.agents)

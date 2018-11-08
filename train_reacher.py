@@ -1,5 +1,5 @@
 from misc.train_ppo import train
-from reacher_env import ReacherEnvironment
+from unity_env import UnityEnv
 from agent_ppo import Agent
 from model import GaussianActorCritic
 import torch
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     out_file = 'saved_models/ppo.ckpt'
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    env = ReacherEnvironment()
+    env = UnityEnv(env_file='data/Reacher/Reacher.exe')
     policy = GaussianActorCritic(env.state_size, env.action_size).to(device)
     a = Agent(
         env,

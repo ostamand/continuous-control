@@ -15,7 +15,7 @@ Finally, the environment is considered solved when the average total reward of t
 
 ## Training 
 
-To train the agent simply run `python train.py`. All hyperparameters can be modified within the script file.   
+To train the agent simply run `python train_reacher.py`. All hyperparameters can be modified within the script file.   
 
 ## Results 
 
