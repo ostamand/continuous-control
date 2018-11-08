@@ -34,8 +34,8 @@ python watch_trained_agent.py --agent data/ppo.ckpt
 Create a new Python 3.6 environment.
 
 ```
-conda create --name drlnd python=3.6 
-activate drlnd
+conda create --name reacher python=3.6 
+activate reacher
 ```
 
 Install ml-agents using the repository.
