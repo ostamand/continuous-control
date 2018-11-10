@@ -32,8 +32,8 @@ class UnityEnv():
         actions = np.clip(actions, -1, 1) 
         env_info = self.env.step(actions)[self.brain_name]
         next_states = env_info.vector_observations
-        rewards = env_info.rewards  
-        dones = env_info.local_done 
+        rewards = env_info.rewards
+        dones = env_info.local_done
         return next_states, np.array(rewards), np.array(dones)
 
     @property

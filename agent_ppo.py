@@ -1,13 +1,16 @@
-import torch
-import numpy as np
-import torch.optim as optim
-import torch.nn as nn
 import os
 import pdb
 
+import numpy as np
+
+import torch
+import torch.optim as optim
+import torch.nn as nn
+import torch.nn.functional as F
+
 class Agent():
-    def __init__(self, env,
-                 policy, timesteps=200, gamma=0.99, epochs=10, gae_tau=0.95,
+    def __init__(self, env, policy, 
+                 timesteps=200, gamma=0.99, epochs=10, gae_tau=0.95,
                  batch_size=32, ratio_clip=0.2, lrate=1e-3, beta=0.01, gradient_clip=5):
         self.timesteps = timesteps
         self.env = env
@@ -23,7 +26,7 @@ class Agent():
 
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.state = self.env.reset()
-        self.opt = optim.RMSprop(policy.parameters(), lr=lrate)
+        self.opt = optim.Adam(policy.parameters(), lr=lrate)
         self.rewards = np.zeros(self.num_agents)
         self.episodes_reward = []
         self.steps = 0
@@ -125,7 +128,8 @@ class Agent():
                 clipped_surrogate = torch.min(ratio*advs_b.unsqueeze(1), clip*advs_b.unsqueeze(1))
 
                 actor_loss = -torch.mean(clipped_surrogate) - self.beta * entropy_b.mean()
-                critic_loss = 0.5 * (returns_b - values_b).pow(2).mean()
+                #critic_loss = 0.5 * (returns_b - values_b).pow(2).mean() 
+                critic_loss = F.smooth_l1_loss(values_b, returns_b.unsqueeze(1))
 
                 self.opt.zero_grad()
                 (actor_loss + critic_loss).backward()

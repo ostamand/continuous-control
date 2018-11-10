@@ -6,19 +6,19 @@ from model import CrawlerActorCritic
 
 if __name__ == '__main__':
     #pylint: disable=invalid-name
-    iterations = 5000
+    iterations = 10000
     gamma = 0.99
-    timesteps = 100
-    ratio_clip = 0.1
+    timesteps = 500
+    ratio_clip = 0.2
     batch_size = int(32*20)
     epochs = 10
-    gradient_clip = 5.0
+    gradient_clip = 10.0
     lrate = 1e-4
     log_each = 10
     beta = 0.0
     gae_tau = 0.95
     decay_steps = None
-    solved = 500.0
+    solved = 100.0
     out_file = 'saved_models/crawler_ppo.ckpt'
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
