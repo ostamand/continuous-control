@@ -1,8 +1,8 @@
+import torch
 from misc.train_ppo import train
 from unity_env import UnityEnv
 from agent_ppo import Agent
-from model import GaussianActorCritic
-import torch
+from model import ReacherActorCritic
 
 if __name__ == '__main__':
     #pylint: disable=invalid-name
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     env = UnityEnv(env_file='data/Reacher/Reacher.exe')
-    policy = GaussianActorCritic(env.state_size, env.action_size).to(device)
+    policy = ReacherActorCritic(env.state_size, env.action_size).to(device)
     a = Agent(
         env,
         policy,
@@ -38,4 +38,5 @@ if __name__ == '__main__':
         gae_tau=gae_tau
     )
 
-    train(a, iterations=iterations, log_each=log_each, solved=solved, decay_steps=decay_steps, out_file=out_file)
+    train(a, iterations=iterations, log_each=log_each, 
+          solved=solved, decay_steps=decay_steps, out_file=out_file)

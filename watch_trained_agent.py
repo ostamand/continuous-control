@@ -1,16 +1,21 @@
-from reacher_env import ReacherEnvironment
-from model import GaussianActorCritic
 import argparse
-import torch 
 import numpy as np
+import torch
+from unity_env import UnityEnv
+from model import ReacherActorCritic, CrawlerActorCritic
 
 DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
-def watch_agent(agent_ckpt):
+def watch_agent(env_name, agent_ckpt):
     device = torch.device(DEVICE)
-    env = ReacherEnvironment(no_graphics=False)
-    
-    policy = GaussianActorCritic(env.state_size, env.action_size).to(device)
+
+    if env_name == 'reacher':
+        env = UnityEnv(env_file='data/Reacher.exe', no_graphics=False)
+        policy = ReacherActorCritic(env.state_size, env.action_size).to(device)
+    else:
+        env = UnityEnv(env_file='data/Crawler/Crawler_Windows_x86_64.exe', no_graphics=False)
+        policy = CrawlerActorCritic(env.state_size, env.action_size).to(device)
+
     checkpoint = torch.load(agent_ckpt, map_location=DEVICE)
     policy.load_state_dict(checkpoint)
 
@@ -26,8 +31,10 @@ def watch_agent(agent_ckpt):
     print(f'Average score of 20 agents is: {np.mean(rewards):.2f}')
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = 'Watch Reacher trained agent') 
+    #pylint: disable=invalid-name
+    parser = argparse.ArgumentParser(description='Watch Reacher trained agent') 
     parser.add_argument("--agent", "-a", help="agent to watch", default='saved_models/ppo.ckpt')
+    parser.add_argument("--env", "-e", help="Unity environment to run", default='reacher')
     args = parser.parse_args()
 
-    watch_agent(args.agent)
+    watch_agent(args.env, args.agent)
