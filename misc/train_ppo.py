@@ -1,18 +1,16 @@
 import pickle
 import numpy as np
-from tensorboardX import SummaryWriter
 
 def train(agent,
           iterations=1000,
           log_each=10,
           solved=90,
           decay_steps=None,
-          out_file=None
-          ):
+          out_file=None,
+          writer=None):
     rewards = []
     beta = agent.beta
     last_saved = 0
-    writer = SummaryWriter()
 
     for it in range(iterations):
         if decay_steps:
@@ -33,13 +31,17 @@ def train(agent,
                 minimum = rewards[-1][1]
                 maximum = rewards[-1][2]
                 summary = f', Rewards: {mean:.2f}/{rewards[-1][4]:.2f}/{minimum:.2f}/{maximum:.2f} mean/std/min/max'
-                writer.add_scalar('data/score', mean, it+1)
-                writer.add_scalar('data/min', minimum, it+1)
-                writer.add_scalar('data/max', maximum, it+1)
+
+                if writer is not None:
+                    writer.add_scalar('data/score', mean, it+1)
+                    writer.add_scalar('data/min', minimum, it+1)
+                    writer.add_scalar('data/max', maximum, it+1)
+
                 if out_file and mean >= solved and mean > last_saved:
                     last_saved = mean
                     agent.save(out_file)
                     summary += " (saved)"
+
             print(f"Iteration: {it+1:d}, Episodes: {len(agent.episodes_reward)}, Steps: {agent.steps:d}, Beta: {agent.beta:.3f}, Clip: {agent.ratio_clip:.3f}{summary}")
 
     pickle.dump(rewards, open('rewards.p', 'wb'))

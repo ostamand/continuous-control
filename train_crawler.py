@@ -3,18 +3,21 @@ from misc.train_ppo import train
 from unity_env import UnityEnv
 from agent_ppo import Agent
 from model import CrawlerActorCritic
+from tensorboardX import SummaryWriter
 
 if __name__ == '__main__':
     #pylint: disable=invalid-name
-    iterations = 10000
+    writer = SummaryWriter()
+
+    iterations = 2000
     gamma = 0.99
-    timesteps = 500
-    ratio_clip = 0.2
+    timesteps = 1000
+    ratio_clip = 0.1
     batch_size = int(32*20)
     epochs = 10
     gradient_clip = 10.0
     lrate = 1e-4
-    log_each = 10
+    log_each = 1
     beta = 0.0
     gae_tau = 0.95
     decay_steps = None
@@ -35,8 +38,9 @@ if __name__ == '__main__':
         lrate=lrate,
         gradient_clip=gradient_clip,
         beta=beta,
-        gae_tau=gae_tau
+        gae_tau=gae_tau,
+        writer=writer
     )
 
     train(a, iterations=iterations, log_each=log_each,
-          solved=solved, decay_steps=decay_steps, out_file=out_file)
+          solved=solved, decay_steps=decay_steps, out_file=out_file, writer=writer)
