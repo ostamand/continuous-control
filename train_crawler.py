@@ -11,11 +11,11 @@ if __name__ == '__main__':
 
     iterations = 2000
     gamma = 0.99
-    timesteps = 1000
-    ratio_clip = 0.1
-    batch_size = int(32*20)
+    nsteps = 2000
+    ratio_clip = 0.2
+    nbatchs = 32
     epochs = 10
-    gradient_clip = 10.0
+    gradient_clip = 0.5
     lrate = 1e-4
     log_each = 1
     beta = 0.0
@@ -23,6 +23,7 @@ if __name__ == '__main__':
     decay_steps = None
     solved = 100.0
     out_file = 'saved_models/crawler_ppo.ckpt'
+    restore = None
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     env = UnityEnv(env_file='data/Crawler/Crawler_Windows_x86_64.exe', mlagents=True)
@@ -30,16 +31,15 @@ if __name__ == '__main__':
     a = Agent(
         env,
         policy,
-        timesteps=timesteps,
+        nsteps=nsteps,
         gamma=gamma,
         epochs=epochs,
-        batch_size=batch_size,
+        nbatchs=nbatchs,
         ratio_clip=ratio_clip,
         lrate=lrate,
         gradient_clip=gradient_clip,
         beta=beta,
-        gae_tau=gae_tau,
-        writer=writer
+        gae_tau=gae_tau
     )
 
     train(a, iterations=iterations, log_each=log_each,

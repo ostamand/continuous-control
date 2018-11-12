@@ -33,9 +33,9 @@ def train(agent,
                 summary = f', Rewards: {mean:.2f}/{rewards[-1][4]:.2f}/{minimum:.2f}/{maximum:.2f} mean/std/min/max'
 
                 if writer is not None:
-                    writer.add_scalar('data/score', mean, it+1)
-                    writer.add_scalar('data/min', minimum, it+1)
-                    writer.add_scalar('data/max', maximum, it+1)
+                    writer.add_scalar('data/score_mean', mean, it+1)
+                    writer.add_scalar('data/score_min', minimum, it+1)
+                    writer.add_scalar('data/score_max', maximum, it+1)
 
                 if out_file and mean >= solved and mean > last_saved:
                     last_saved = mean

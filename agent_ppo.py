@@ -9,20 +9,38 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Agent():
+    """PPO Agent
+
+    Args
+        env:                Environment wrapper
+        policy:             Network to optimise
+        nsteps:             Number of steps per iteration is nsteps * num_agents
+        epochs:             Number of training epoch per iteration
+        nbatchs:            Number of batch per training epoch
+        ratio_clip:         Probability ratio clipping
+        lrate:              Learning rate 
+        beta:               Policy entropy coefficient
+        gae_tau:            GAE tau. Advantage estimation discounting factor
+        gamma:              Discount rate 
+        gradient_clip       Gradient norm clipping
+        restore
+    """
     def __init__(self, env, policy, 
-                 timesteps=200, gamma=0.99, epochs=10, gae_tau=0.95,
-                 batch_size=32, ratio_clip=0.2, lrate=1e-3, beta=0.01, gradient_clip=5):
-        self.timesteps = timesteps
+                 nsteps=200, epochs=10, nbatchs=32, 
+                 ratio_clip=0.2, lrate=1e-3, beta=0.01, 
+                 gae_tau=0.95, gamma=0.99, gradient_clip=0.5, restore=None):
+        self.nsteps = nsteps
         self.env = env
         self.policy = policy
         self.gamma = gamma
         self.epochs = epochs
-        self.batch_size = batch_size
+        self.nbatchs = nbatchs
         self.ratio_clip = ratio_clip
         self.lrate = lrate
         self.gradient_clip = gradient_clip
         self.beta = beta
         self.gae_tau = gae_tau
+        self.restore = restore
 
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.state = self.env.reset()
@@ -30,6 +48,10 @@ class Agent():
         self.rewards = np.zeros(self.num_agents)
         self.episodes_reward = []
         self.steps = 0
+
+        # TODO restore
+
+        assert((self.nsteps * self.num_agents) % self.nbatchs == 0)
 
     @property
     def num_agents(self):
@@ -49,18 +71,18 @@ class Agent():
         return torch.from_numpy(x).float().to(self.device)
 
     def get_batch(self, states, actions, old_log_probs, returns, advs):
-        length = states.shape[0]
+        length = states.shape[0] # nsteps * num_agents
+        batch_size = int(length / self.nbatchs)
         idx = np.random.permutation(length)
-        # only full batch
-        for i in range(length // self.batch_size):
-            rge = idx[i*self.batch_size:(i+1)*self.batch_size]
+        for i in range(self.nbatchs):
+            rge = idx[i*batch_size:(i+1)*batch_size]
             yield (
                 states[rge], actions[rge], old_log_probs[rge], returns[rge], advs[rge].squeeze(1)
                 )
 
     def step(self):
         trajectory_raw = []
-        for _ in range(self.timesteps):
+        for _ in range(self.nsteps):
 
             state = self.tensor_from_np(self.state)
             action, log_p, _, value = self.policy(state)
@@ -136,4 +158,5 @@ class Agent():
                 nn.utils.clip_grad_norm_(self.policy.parameters(), self.gradient_clip)
                 self.opt.step()
 
-                self.steps += self.batch_size
+        # steps of the environement processed by the agent 
+        self.steps += self.nsteps * self.num_agents
