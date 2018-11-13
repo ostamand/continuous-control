@@ -49,7 +49,7 @@ class CrawlerActorCritic(nn.Module):
         #self.fc3_bn = nn.BatchNorm1d(100)
 
         self.fc_actor_mean = nn.Linear(256, self.action_dim)
-        #self.fc_actor_std = nn.Linear(256, self.action_dim)
+        self.fc_actor_std = nn.Linear(256, self.action_dim)
         self.fc_critic = nn.Linear(256, 1)
 
         self.std = nn.Parameter(torch.zeros(1, action_dim))
@@ -60,8 +60,8 @@ class CrawlerActorCritic(nn.Module):
 
         # Actor
         mean = torch.tanh(self.fc_actor_mean(x))
-        #std = F.softplus(self.fc_actor_std(x))
-        dist = torch.distributions.Normal(mean, F.softplus(self.std))
+        std = F.softplus(self.fc_actor_std(x))
+        dist = torch.distributions.Normal(mean, std)
         if action is None:
             action = dist.sample()
         log_prob = dist.log_prob(action)

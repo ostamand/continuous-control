@@ -5,18 +5,12 @@ def train(agent,
           iterations=1000,
           log_each=10,
           solved=90,
-          decay_steps=None,
           out_file=None,
           writer=None):
     rewards = []
-    beta = agent.beta
     last_saved = 0
-
     for it in range(iterations):
-        if decay_steps:
-            ratio = 1 - (agent.steps / decay_steps)
-            agent.beta = max(ratio * beta, 0)
-
+        frac = 1.0 - it / (iterations-1)
         agent.step()
 
         if len(agent.episodes_reward) >= 100:
@@ -42,6 +36,6 @@ def train(agent,
                     agent.save(out_file)
                     summary += " (saved)"
 
-            print(f"Iteration: {it+1:d}, Episodes: {len(agent.episodes_reward)}, Steps: {agent.steps:d}, Beta: {agent.beta:.3f}, Clip: {agent.ratio_clip:.3f}{summary}")
+            print(f"Iteration: {it+1:d}, Episodes: {len(agent.episodes_reward)}, Steps: {agent.steps:d}, lrate: {agent.running_lrate:.2E}, Clip: {agent.ratio_clip:.3f}{summary}")
 
     pickle.dump(rewards, open('rewards.p', 'wb'))

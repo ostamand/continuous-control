@@ -17,6 +17,7 @@ if __name__ == '__main__':
     epochs = 10
     gradient_clip = 0.5
     lrate = 1e-4
+    lrate_schedule = lambda it: 0.995 ** it
     log_each = 1
     beta = 0.0
     gae_tau = 0.95
@@ -37,6 +38,7 @@ if __name__ == '__main__':
         nbatchs=nbatchs,
         ratio_clip=ratio_clip,
         lrate=lrate,
+        lrate_schedule=lrate_schedule,
         gradient_clip=gradient_clip,
         beta=beta,
         gae_tau=gae_tau

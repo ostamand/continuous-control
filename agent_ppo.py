@@ -25,9 +25,9 @@ class Agent():
         gradient_clip       Gradient norm clipping
         restore
     """
-    def __init__(self, env, policy, 
-                 nsteps=200, epochs=10, nbatchs=32, 
-                 ratio_clip=0.2, lrate=1e-3, beta=0.01, 
+    def __init__(self, env, policy,
+                 nsteps=200, epochs=10, nbatchs=32,
+                 ratio_clip=0.2, lrate=1e-3, lrate_schedule=lambda it: 1.0, beta=0.01,
                  gae_tau=0.95, gamma=0.99, gradient_clip=0.5, restore=None):
         self.nsteps = nsteps
         self.env = env
@@ -41,21 +41,33 @@ class Agent():
         self.beta = beta
         self.gae_tau = gae_tau
         self.restore = restore
+        self.lrate_schedule = lrate_schedule
 
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.state = self.env.reset()
         self.opt = optim.Adam(policy.parameters(), lr=lrate)
+
+        # lrate scheduler
+        self.scheduler = optim.lr_scheduler.LambdaLR(self.opt, lr_lambda=lrate_schedule)
+
+        # restore weights
+        if restore is not None:
+            checkpoint = torch.load(restore)
+            self.policy.load_state_dict(checkpoint)
+
         self.rewards = np.zeros(self.num_agents)
         self.episodes_reward = []
         self.steps = 0
-
-        # TODO restore
 
         assert((self.nsteps * self.num_agents) % self.nbatchs == 0)
 
     @property
     def num_agents(self):
         return self.env.num_agents
+
+    @property
+    def running_lrate(self):
+        return self.opt.param_groups[0]['lr']
 
     @property
     def action_size(self):
@@ -81,6 +93,9 @@ class Agent():
                 )
 
     def step(self):
+        # step lrate scheduler
+        self.scheduler.step()
+
         trajectory_raw = []
         for _ in range(self.nsteps):
 

@@ -1,10 +1,11 @@
+#pylint: skip-file
 import random
-import os 
+import os
 
 import torch
 from tensorboardX import SummaryWriter
 
-import misc.train_ppo import train 
+from misc.train_ppo import train
 from unity_env import UnityEnv
 from agent_ppo import Agent
 from model import CrawlerActorCritic
@@ -18,8 +19,9 @@ if __name__ == "__main__":
     lrates = [1e-4, 3e-4] # learning rate 
     clips = [0.1, 0.2] # propability ratio clipping
     nsteps = [512, 1024, 2048] # number of steps per agent per iteration
-    epochs = [5, 10] # number of training epoch per iteration
+    epochs = [4, 10] # number of training epoch per iteration
     gae_taus =[0.95, 0.98] # GAE tau  
+    lrate_decays = [0.995, 0.999, 0.9995]
 
     # parameters that are fixed 
     gamma = 0.99 # discount rate
@@ -28,24 +30,28 @@ if __name__ == "__main__":
     beta = 0.0 # entropy coefficient
 
     # number of hyperparam seach loop to run 
-    search_loops = 10 
+    search_loops = 100 
 
     # number of iterations per hyperparam loop
-    iterations = 500
+    iterations = 20 #250
 
     # root logdir for tensorboard 
     root_logdir = 'search'
 
-    for s_i in range(search_loops):
+    for _ in range(search_loops):
+
         nbatch = random.choice(nbatchs)
         lrate = random.choice(lrates)
         clip = random.choice(clips)
         nstep = random.choice(nsteps)
         epoch = random.choice(epochs)
-        gae_tau = random.choice()
+        gae_tau = random.choice(gae_taus)
+        lrate_decay = random.choice(lrate_decays)
+        lrate_schedule = lambda it: lrate_decay ** it
 
-        summary = f'nbatch_{nbatch:d}_lrate_{lrate:.0E}_clip_{clip:d}'
+        summary = f'nbatch_{nbatch:d}_lrate_{lrate:.0E}_clip_{clip:.2f}'
         summary += f'_nstep_{nstep:d}_epoch_{epoch:d}_gae_{gae_tau:.2f}'
+        summary += f'_lrdecay_{lrate_decay}'
 
         writer = SummaryWriter(os.path.join(root_logdir, summary))
 
@@ -68,10 +74,10 @@ if __name__ == "__main__":
             gradient_clip=gradient_clip,
             beta=beta,
             gae_tau=gae_tau,
-            writer=writer)
+            lrate_schedule=lrate_schedule)
 
         # run training 
-        print('Running: {summary}')
+        print(f'Running: {summary}')
         train(a, iterations=iterations, log_each=log_each, writer=writer)
 
         # close env
