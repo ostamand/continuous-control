@@ -9,14 +9,14 @@ if __name__ == '__main__':
     #pylint: disable=invalid-name
     writer = SummaryWriter()
 
-    iterations = 2000
+    iterations = 10000
     gamma = 0.99
-    nsteps = 2000
+    nsteps = 2048
     ratio_clip = 0.2
     nbatchs = 32
     epochs = 10
     gradient_clip = 0.5
-    lrate = 1e-4
+    lrate = 2e-4
     lrate_schedule = lambda it: 0.995 ** it
     log_each = 1
     beta = 0.0
@@ -45,4 +45,4 @@ if __name__ == '__main__':
     )
 
     train(a, iterations=iterations, log_each=log_each,
-          solved=solved, decay_steps=decay_steps, out_file=out_file, writer=writer)
+          solved=solved, out_file=out_file, writer=writer)

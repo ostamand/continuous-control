@@ -26,14 +26,14 @@ if __name__ == "__main__":
     # parameters that are fixed 
     gamma = 0.99 # discount rate
     gradient_clip = 0.5 # gradient norm clipping
-    log_each = 10 
+    log_each = 1 
     beta = 0.0 # entropy coefficient
 
     # number of hyperparam seach loop to run 
     search_loops = 100 
 
     # number of iterations per hyperparam loop
-    iterations = 20 #250
+    iterations = 250
 
     # root logdir for tensorboard 
     root_logdir = 'search'
