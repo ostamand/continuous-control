@@ -28,7 +28,7 @@ class Agent():
     def __init__(self, env, policy,
                  nsteps=200, epochs=10, nbatchs=32,
                  ratio_clip=0.2, lrate=1e-3, lrate_schedule=lambda it: 1.0, beta=0.01,
-                 gae_tau=0.95, gamma=0.99, gradient_clip=0.5, restore=None):
+                 gae_tau=0.95, gamma=0.99, weight_decay=0.0, gradient_clip=0.5, restore=None):
         self.nsteps = nsteps
         self.env = env
         self.policy = policy
@@ -42,10 +42,11 @@ class Agent():
         self.gae_tau = gae_tau
         self.restore = restore
         self.lrate_schedule = lrate_schedule
+        self.weight_decay = weight_decay
 
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.state = self.env.reset()
-        self.opt = optim.Adam(policy.parameters(), lr=lrate)
+        self.opt = optim.Adam(policy.parameters(), lr=lrate, weight_decay=self.weight_decay)
 
         # lrate scheduler
         self.scheduler = optim.lr_scheduler.LambdaLR(self.opt, lr_lambda=lrate_schedule)
