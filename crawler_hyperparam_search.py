@@ -18,10 +18,11 @@ if __name__ == "__main__":
     nbatchs = [16, 32, 64] # number of batch per training epoch
     lrates = [1e-4, 3e-4] # learning rate 
     clips = [0.1, 0.2] # propability ratio clipping
-    nsteps = [512, 1024, 2048] # number of steps per agent per iteration
+    nsteps = [2048] # number of steps per agent per iteration
     epochs = [4, 10] # number of training epoch per iteration
     gae_taus =[0.95, 0.98] # GAE tau  
     lrate_decays = [0.995, 0.999, 0.9995]
+    weight_decays =[1e-5, 1e-6, 1e-7]
 
     # parameters that are fixed 
     gamma = 0.99 # discount rate
@@ -33,7 +34,7 @@ if __name__ == "__main__":
     search_loops = 100 
 
     # number of iterations per hyperparam loop
-    iterations = 250
+    iterations = 100
 
     # root logdir for tensorboard 
     root_logdir = 'search'
@@ -46,12 +47,13 @@ if __name__ == "__main__":
         nstep = random.choice(nsteps)
         epoch = random.choice(epochs)
         gae_tau = random.choice(gae_taus)
+        weight_decay = random.choice(weight_decays)
         lrate_decay = random.choice(lrate_decays)
         lrate_schedule = lambda it: lrate_decay ** it
 
         summary = f'nbatch_{nbatch:d}_lrate_{lrate:.0E}_clip_{clip:.2f}'
         summary += f'_nstep_{nstep:d}_epoch_{epoch:d}_gae_{gae_tau:.2f}'
-        summary += f'_lrdecay_{lrate_decay}'
+        summary += f'_lrdecay_{lrate_decay}_wdcay_{weight_decay}'
 
         writer = SummaryWriter(os.path.join(root_logdir, summary))
 
@@ -74,6 +76,7 @@ if __name__ == "__main__":
             gradient_clip=gradient_clip,
             beta=beta,
             gae_tau=gae_tau,
+            weight_decay=weight_decay,
             lrate_schedule=lrate_schedule)
 
         # run training 

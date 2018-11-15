@@ -17,12 +17,13 @@ if __name__ == '__main__':
     epochs = 10
     gradient_clip = 0.5
     lrate = 2e-4
-    lrate_schedule = lambda it: 0.995 ** it
+    lrate_schedule = lambda it: max(0.995 ** it, 0.01)
     log_each = 1
     beta = 0.0
     gae_tau = 0.95
     decay_steps = None
     solved = 100.0
+    weight_decay = 0
     out_file = 'saved_models/crawler_ppo.ckpt'
     restore = None
 
@@ -39,9 +40,11 @@ if __name__ == '__main__':
         ratio_clip=ratio_clip,
         lrate=lrate,
         lrate_schedule=lrate_schedule,
+        weight_decay=weight_decay,
         gradient_clip=gradient_clip,
         beta=beta,
-        gae_tau=gae_tau
+        gae_tau=gae_tau,
+        restore=restore
     )
 
     train(a, iterations=iterations, log_each=log_each,

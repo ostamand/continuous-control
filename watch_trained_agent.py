@@ -48,4 +48,4 @@ if __name__ == "__main__":
     parser.add_argument("--steps", "-s", help="Number of steps to run per agents", default=1000)
     args = parser.parse_args()
 
-    watch_agent(args.env, args.agent, args.steps)
+    watch_agent(args.env, args.agent, int(args.steps))

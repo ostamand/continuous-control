@@ -1,5 +1,35 @@
 # Report 
 
+940 iterations, mean=893.03
+
+more unite per layer, clipping now at 0.1
+1430 iterations, mean=931.44
+
+
+
+
+1023
+
+1103, 299
+1291, 499
+1602, 736
+
+
+deeper network (added one layer)
+
+TODO 
+add batch norm 
+entropy?
+tau gae
+
+
+Nov11_11-49-42
+1000 steps 
+
+
+
+
+
 ## Hyperparameters
 
 The hyperparameters used during training are:
